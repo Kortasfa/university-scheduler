@@ -31,7 +31,7 @@ export default function UsersPage() {
   )
 
   return (
-    <>
+    <div className="container mx-auto p-4">
       <div className="mb-6 flex justify-between items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
@@ -83,6 +83,6 @@ export default function UsersPage() {
           </TableBody>
         </Table>
       </div>
-    </>
+    </div>
   )
 }

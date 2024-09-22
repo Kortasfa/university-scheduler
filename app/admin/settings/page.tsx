@@ -13,7 +13,7 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className="max-w-md">
+    <div className="p-4 max-w-md">
       <h3 className="mb-4 text-lg font-semibold">Theme Settings</h3>
       <div className="space-y-4">
         <div>
@@ -21,7 +21,7 @@ export default function SettingsPage() {
             Color Theme
           </label>
           <Select value={theme} onValueChange={setTheme}>
-            <SelectTrigger id="theme-select">
+            <SelectTrigger>
               <SelectValue placeholder="Select theme" />
             </SelectTrigger>
             <SelectContent>
