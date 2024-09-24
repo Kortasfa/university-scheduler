@@ -20,7 +20,6 @@ import { TextButtons } from "./selectors/text-buttons";
 import { slashCommand, suggestionItems } from "./slash-command";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { uploadFn } from "./image-upload";
-import { Separator } from "../ui/separator";
 
 const extensions = [...defaultExtensions, slashCommand];
 
@@ -87,14 +86,10 @@ const Editor = ({ initialValue, onChange }: EditorProp) => {
           }}
           className="flex w-fit max-w-[90vw] overflow-hidden rounded-md border border-muted bg-background shadow-xl"
         >
-          <Separator orientation="vertical" />
           <NodeSelector open={openNode} onOpenChange={setOpenNode} />
-          <Separator orientation="vertical" />
 
           <LinkSelector open={openLink} onOpenChange={setOpenLink} />
-          <Separator orientation="vertical" />
           <TextButtons />
-          <Separator orientation="vertical" />
           <ColorSelector open={openColor} onOpenChange={setOpenColor} />
         </EditorBubble>
       </EditorContent>
