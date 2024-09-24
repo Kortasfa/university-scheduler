@@ -1,7 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,18 +19,30 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { users } from '@/lib/data'
-import { MoreVertical, Search } from 'lucide-react'
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { User } from "@/lib/data";
+import { MoreVertical, Plus, Search } from "lucide-react";
+import { deleteUser, getUsers } from "@/lib/actions";
 
 export default function UsersPage() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const router = useRouter();
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
+
+  const handleDeleteUser = async (id: number) => {
+    await deleteUser(id);
+    setUsers(users.filter((user) => user.id !== id));
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -43,7 +57,14 @@ export default function UsersPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <Link href="/admin/users/add" passHref>
+          <Button className="ml-4">
+            <Plus className="h-4 w-4 mr-2" />
+            Add User
+          </Button>
+        </Link>
       </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -71,10 +92,19 @@ export default function UsersPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>Edit User</DropdownMenuItem>
-                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/admin/users/edit=${user.id}`)}
+                      >
+                        Edit User
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive">Delete User</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="text-destructive"
+                      >
+                        Delete User
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -84,5 +114,5 @@ export default function UsersPage() {
         </Table>
       </div>
     </div>
-  )
+  );
 }

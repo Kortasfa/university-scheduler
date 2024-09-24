@@ -36,7 +36,7 @@ const MenuItem = ({ item }: { item: any }) => {
         asChild={!item.submenu}
         variant="ghost"
         className={cn("w-full justify-start", 
-          pathname === item.path && "bg-accent text-accent-foreground"
+          pathname.includes(item.path) && "bg-accent text-accent-foreground"
         )}
         onClick={item.submenu ? toggleSubMenu : undefined}
       >
