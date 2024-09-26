@@ -15,7 +15,7 @@ export default function MobileNav() {
       <div className="h-16 md:hidden" /> {/* Spacer div */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-background z-50">
         <nav className="flex justify-around items-center h-16">
-          {SIDENAV_ITEMS(true).map((item, idx) => (
+          {SIDENAV_ITEMS.map((item, idx) => (
             <Button
               key={idx}
               asChild

@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex h-screen bg-background">
+    <div className="grid h-screen w-full md:pl-[56px]">
       <SideNav />
       <div className="flex-1 flex flex-col overflow-hidden bg-muted/40">
         <Header />
