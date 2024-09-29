@@ -15,6 +15,12 @@ export interface User {
   avatar?: string;
 }
 
+export interface Student extends User {
+  stream: string,
+  year: number,
+  group: string,
+}
+
 export const courses: Course[] = [
   { id: 1, title: "Introduction to React", students: 1234, lessons: 12, duration: "6 weeks" },
   { id: 2, title: "Advanced JavaScript Concepts", students: 987, lessons: 15, duration: "8 weeks" },
@@ -30,3 +36,15 @@ export const usersData: User[] = [
   { id: 4, name: "Alice Brown", email: "alice@example.com", role: "Admin", courses: 0 },
   { id: 5, name: "Charlie Wilson", email: "charlie@example.com", role: "Student", courses: 4 },
 ]
+
+export const streams = [
+  { value: "programming", label: "Programming" },
+  { value: "design", label: "Design" },
+]
+
+export const years = [1, 2, 3, 4, 5, 6]
+
+export const groups = {
+  programming: ["Bears", "Wolves", "Lions"],
+  design: ["Eagles", "Foxes", "Owls"],
+}

@@ -1,19 +1,25 @@
-'use client';
-
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from '@/lib/utils';
-import { Triangle, SquareTerminal, Bot, Code2, Book, Settings2, LifeBuoy, SquareUser } from "lucide-react";
-import { SIDENAV_ITEMS } from '@/styles/constants';
-import { SideNavItem } from '@/styles/types';
-import { ThemeSwitcher } from '../theme-switcher';
+import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { LifeBuoy, SquareUser, Triangle } from "lucide-react";
+import { SIDENAV_ITEMS } from "@/styles/constants";
+import { SideNavItem } from "@/styles/types";
+import { ThemeSwitcher } from "../theme-switcher";
 
 const BOTTOM_ITEMS = [
-  { icon: <LifeBuoy className="size-5" />, title: "Help", path: "/help" },
-  { icon: <SquareUser className="size-5" />, title: "Account", path: "/account" },
+  { icon: <LifeBuoy className="h-4 w-4" />, title: "Help", path: "/help" },
+  {
+    icon: <SquareUser className="h-4 w-4" />,
+    title: "Account",
+    path: "/account",
+  },
 ];
 
 const SideNav = () => {
@@ -25,14 +31,10 @@ const SideNav = () => {
         </Button>
       </div>
       <nav className="grid gap-1 p-2">
-        {SIDENAV_ITEMS.map((item) => (
-          <NavItem key={item.path} {...item} />
-        ))}
+        {SIDENAV_ITEMS.map((item) => <NavItem key={item.path} {...item} />)}
       </nav>
       <nav className="mt-auto grid gap-1 p-2">
-        {BOTTOM_ITEMS.map((item) => (
-          <NavItem key={item.path} {...item} />
-        ))}
+        {BOTTOM_ITEMS.map((item) => <NavItem key={item.path} {...item} />)}
         <ThemeSwitcher />
       </nav>
     </aside>
@@ -40,9 +42,6 @@ const SideNav = () => {
 };
 
 const NavItem = ({ icon, title, path }: SideNavItem) => {
-  const pathname = usePathname();
-  const isActive = pathname === path;
-
   return (
     <TooltipProvider>
       <Tooltip>
@@ -53,7 +52,7 @@ const NavItem = ({ icon, title, path }: SideNavItem) => {
             size="icon"
             className={cn(
               "rounded-lg",
-              isActive && "bg-muted"
+              // isActive && "bg-muted"
             )}
           >
             <Link href={path}>

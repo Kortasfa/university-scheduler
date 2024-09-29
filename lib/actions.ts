@@ -1,6 +1,6 @@
 'use server'
 
-import { User, usersData } from './data'
+import { Student, User, usersData } from './data'
 
 let users: User[] = usersData
 
@@ -8,7 +8,7 @@ export async function getUsers(): Promise<User[]> {
   return users
 }
 
-export async function getUserById(id: number): Promise<User | undefined> {
+export async function getUserById(id: number): Promise<User | Student | undefined> {
   return users.find(user => user.id === id)
 }
 

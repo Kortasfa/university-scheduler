@@ -1,118 +1,124 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { User } from "@/lib/data";
-import { MoreVertical, Plus, Search } from "lucide-react";
-import { deleteUser, getUsers } from "@/lib/actions";
+import { useEffect, useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { User } from "@/lib/data"
+import { Plus, Search } from "lucide-react"
+import { deleteUser, getUsers } from "@/lib/actions"
+import { UsersTable } from "@/components/users/users-table"
+import StudentsConfiguration from "@/components/users/configuration"
+import UserForm from "@/components/users/user-form"
+import Link from "next/link"
 
 export default function UsersPage() {
-  const router = useRouter();
-  const [users, setUsers] = useState<User[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [users, setUsers] = useState<User[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [showForm, setShowForm] = useState(false)
+  const [editUserId, setEditUserId] = useState<number | null>(null)
 
   useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
+    getUsers().then(setUsers)
+  }, [])
 
   const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
 
   const handleDeleteUser = async (id: number) => {
-    await deleteUser(id);
-    setUsers(users.filter((user) => user.id !== id));
-  };
+    await deleteUser(id)
+    setUsers(users.filter((user) => user.id !== id))
+  }
+
+  const handleEditUser = (id: number) => {
+    setEditUserId(id)
+    setShowForm(true)
+  }
+
+  const handleAddUser = () => {
+    setEditUserId(null)
+    setShowForm(true)
+  }
+
+  const handleCloseForm = () => {
+    setShowForm(false)
+    setEditUserId(null)
+  }
+
+  const handleUserSubmit = () => {
+    // if (editUserId) {
+    //   setUsers(users.map(user => user.id === editUserId ? updatedUser : user))
+    // } else {
+    //   setUsers([...users, updatedUser])
+    // }
+    handleCloseForm()
+  }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="mb-6 flex justify-between items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search users..."
-            className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+    <div className="flex space-x-4">
+      <div className="flex-1">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">Users</CardTitle>
+            <Button size="sm" onClick={handleAddUser}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search users..."
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <UsersTable 
+                users={filteredUsers} 
+                onDeleteUser={handleDeleteUser} 
+                onEditUser={handleEditUser}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="flex flex-col gap-4">
+        <StudentsConfiguration />
+        <Card>
+          <CardHeader>
+            <CardTitle>Need help?</CardTitle>
+            <CardDescription className="text-wrap">
+              Read our documentation.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href={"/help/users"}>
+              <Button size="sm" variant="secondary">
+                Find "Users"
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+      <Dialog open={showForm} onOpenChange={setShowForm}>
+        <DialogContent className="sm:max-w-[825px]">
+          <DialogHeader>
+            <DialogTitle>{editUserId ? 'Edit User' : 'Add User'}</DialogTitle>
+          </DialogHeader>
+          <UserForm 
+            action={editUserId ? editUserId.toString() : 'add'} 
+            onClose={handleCloseForm}
+            onSubmit={handleUserSubmit}
           />
-        </div>
-        <Link href="/admin/users/add" passHref>
-          <Button className="ml-4">
-            <Plus className="h-4 w-4 mr-2" />
-            Add User
-          </Button>
-        </Link>
-      </div>
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Courses</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell>{user.courses}</TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          router.push(`/admin/users/edit=${user.id}`)}
-                      >
-                        Edit User
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-destructive"
-                      >
-                        Delete User
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+        </DialogContent>
+      </Dialog>
     </div>
-  );
+  )
 }

@@ -3,9 +3,6 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '../ui/breadcrumb';
-import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 
 const Header = () => {
   const pathname = usePathname()
@@ -27,15 +24,6 @@ const Header = () => {
           ))}
         </BreadcrumbList>
       </Breadcrumb>
-      <Drawer>
-        <DrawerTrigger asChild>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Settings className="size-4" />
-            <span className="sr-only">Settings</span>
-          </Button>
-        </DrawerTrigger>
-        {/* Add DrawerContent here if needed */}
-      </Drawer>
     </div>
   );
 };

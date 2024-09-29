@@ -1,8 +1,5 @@
-'use client';
-
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, ChevronDown } from 'lucide-react';
@@ -19,7 +16,7 @@ const HeaderMobile = () => {
       </SheetTrigger>
       <SheetContent side="left" className="w-[300px] sm:w-[400px]">
         <nav className="flex flex-col gap-4">
-          {SIDENAV_ITEMS(false).map((item, idx) => (
+          {SIDENAV_ITEMS.map((item, idx) => (
             <MenuItem key={idx} item={item} />
           ))}
         </nav>
