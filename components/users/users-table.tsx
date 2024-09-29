@@ -1,6 +1,3 @@
-"use client"
-
-import { useState } from "react"
 import {
   Table,
   TableBody,
@@ -20,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { User } from "@/lib/data"
 import { MoreVertical } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 
 interface UsersTableProps {
   users: User[]
@@ -33,6 +31,7 @@ export function UsersTable({ users, onDeleteUser, onEditUser }: UsersTableProps)
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Avatar</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
@@ -43,6 +42,12 @@ export function UsersTable({ users, onDeleteUser, onEditUser }: UsersTableProps)
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.id}>
+              <TableCell>
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={user.avatar || undefined} alt="User avatar" />
+                <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              </TableCell>
               <TableCell className="font-medium">{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
