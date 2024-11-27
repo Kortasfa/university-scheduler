@@ -62,7 +62,7 @@ export default function CourseFormPage({ params }: { params: { action: string } 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Course data:', course)
-    router.push('/admin/courses')
+    router.push('/protected/admin/courses')
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

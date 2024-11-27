@@ -12,6 +12,7 @@ import { UsersTable } from "@/components/users/users-table"
 import StudentsConfiguration from "@/components/users/configuration"
 import UserForm from "@/components/users/user-form"
 import Link from "next/link"
+import { getUsersAction } from "@/app/actions"
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
@@ -20,7 +21,9 @@ export default function UsersPage() {
   const [editUserId, setEditUserId] = useState<number | null>(null)
 
   useEffect(() => {
-    getUsers().then(setUsers)
+    getUsersAction().then(r => {
+      console.log(r)
+    })
   }, [])
 
   const filteredUsers = users.filter((user) =>

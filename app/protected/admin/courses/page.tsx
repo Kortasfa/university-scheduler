@@ -44,7 +44,7 @@ export default function CoursesPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button onClick={() => router.push('/admin/courses/add')}>
+        <Button onClick={() => router.push('/protected/admin/courses/add')}>
           <Plus className="mr-2 h-4 w-4" />
           Create Course
         </Button>
@@ -76,8 +76,8 @@ export default function CoursesPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => router.push(`/admin/courses/edit`)}>Edit Course</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push(`/admin/courses/${course.id}`)}>View Details</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push(`/protected/admin/courses/edit`)}>Edit Course</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => router.push(`/protected/admin/courses/${course.id}`)}>View Details</DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-destructive">Delete Course</DropdownMenuItem>
                     </DropdownMenuContent>
