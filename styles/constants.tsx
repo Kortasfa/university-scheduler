@@ -1,5 +1,5 @@
 import { SideNavItem } from './types';
-import { BookOpen, Calendar, Settings, Users } from 'lucide-react';
+import { Calendar, Users } from 'lucide-react';
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
@@ -10,11 +10,6 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   {
     title: 'Calendar',
     path: '/protected/admin/calendar',
-    icon:  <Calendar className="h-4 w-4" />,
-  },
-  {
-    title: 'Settings',
-    path: '/protected/admin/settings',
-    icon:  <Settings className="h-4 w-4" />,
+    icon: <Calendar className="h-4 w-4" />,
   },
 ];
