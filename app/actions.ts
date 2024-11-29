@@ -4,6 +4,7 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { User } from "@/lib/data";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -131,12 +132,19 @@ export const getUsersAction = async () => {
   const supabase = await createClient();
 
   const {
-    data: { users },
-    error,
-  } = await supabase.auth.admin.listUsers({
-    page: 1,
-    perPage: 1000,
-  });
+    data,
+    error
+  } = await supabase
+    .from('user')
+    .select(`
+      id,
+      first_name,
+      surname,
+      middle_name,
+      avatar_path,
+      group!inner(name),
+      role!inner(name)
+    `)
 
   if (error) {
     console.error("Error fetching users:", error.message);
@@ -148,7 +156,35 @@ export const getUsersAction = async () => {
 
   return {
     error: false,
-    users,
+    users: data.map((user) => ({
+      name: user.first_name + " " + user.surname + " " + user.middle_name,
+      id: user.id,
+      avatar: user.avatar_path,
+      group: user.group.name,
+      role: user.role.name,
+    })),
+  };
+};
+
+export const getGroupsAction = async () => {
+  const supabase = await createClient();
+
+  const {
+    data,
+    error
+  } = await supabase.from("group").select("*");
+
+  if (error) {
+    console.error("Error fetching groups:", error.message);
+    return {
+      error: true,
+      message: error.message,
+    };
+  }
+
+  return {
+    error: false,
+    groups: data,
   };
 };
 

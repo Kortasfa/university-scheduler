@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import SideNav from '@/components/header/side-nav'
-import Header from '@/components/header/header'
 import MobileNav from '@/components/header/mobile-nav'
+import { EnvVarWarning } from '@/components/env-var-warning'
+import HeaderAuth from '@/components/header-auth'
+import { hasEnvVars } from '@/utils/supabase/check-env-vars'
 
 export const metadata: Metadata = {
   title: 'E-Learning Admin Dashboard',
@@ -17,7 +19,7 @@ export default function RootLayout({
     <div className="grid h-screen w-full md:pl-[56px]">
       <SideNav />
       <div className="flex-1 flex flex-col overflow-hidden bg-muted/40">
-        <Header />
+        {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
         {/* <HeaderMobile /> */}
         <main className="flex-1 overflow-auto p-4 lg:p-6">
           {children}

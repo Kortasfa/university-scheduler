@@ -3,6 +3,9 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '../ui/breadcrumb';
+import { hasEnvVars } from '@/utils/supabase/check-env-vars';
+import { EnvVarWarning } from '../env-var-warning';
+import HeaderAuth from '../header-auth';
 
 const Header = () => {
   const pathname = usePathname()

@@ -1,34 +1,27 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { User } from "@/lib/data"
-import { Plus, Search } from "lucide-react"
-import { deleteUser, getUsers } from "@/lib/actions"
-import { UsersTable } from "@/components/users/users-table"
+import { Plus, Search } from 'lucide-react'
+import { deleteUser } from "@/lib/actions"
+import { UsersTable, UserTableView } from "@/components/users/users-table"
+import { UsersTableSkeleton } from "@/components/users/users-table-skeleton"
 import StudentsConfiguration from "@/components/users/configuration"
 import UserForm from "@/components/users/user-form"
 import Link from "next/link"
-import { getUsersAction } from "@/app/actions"
+import { useUsers } from "@/hooks/use-users"
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([])
+  const { users, setUsers, loading } = useUsers()
   const [searchTerm, setSearchTerm] = useState("")
   const [showForm, setShowForm] = useState(false)
   const [editUserId, setEditUserId] = useState<number | null>(null)
 
-  useEffect(() => {
-    getUsersAction().then(r => {
-      console.log(r)
-    })
-  }, [])
-
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleDeleteUser = async (id: number) => {
@@ -49,15 +42,6 @@ export default function UsersPage() {
   const handleCloseForm = () => {
     setShowForm(false)
     setEditUserId(null)
-  }
-
-  const handleUserSubmit = () => {
-    // if (editUserId) {
-    //   setUsers(users.map(user => user.id === editUserId ? updatedUser : user))
-    // } else {
-    //   setUsers([...users, updatedUser])
-    // }
-    handleCloseForm()
   }
 
   return (
@@ -83,45 +67,76 @@ export default function UsersPage() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <UsersTable 
-                users={filteredUsers} 
-                onDeleteUser={handleDeleteUser} 
-                onEditUser={handleEditUser}
-              />
+              <div className="rounded-md border">
+                {loading ? (
+                  <UsersTableSkeleton />
+                ) : (
+                  <UsersTable
+                    users={filteredUsers}
+                    onDeleteUser={handleDeleteUser}
+                    onEditUser={handleEditUser}
+                  />
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
-      <div className="flex flex-col gap-4">
-        <StudentsConfiguration />
-        <Card>
-          <CardHeader>
-            <CardTitle>Need help?</CardTitle>
-            <CardDescription className="text-wrap">
-              Read our documentation.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href={"/help/users"}>
-              <Button size="sm" variant="secondary">
-                Find "Users"
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="sm:max-w-[825px]">
-          <DialogHeader>
-            <DialogTitle>{editUserId ? 'Edit User' : 'Add User'}</DialogTitle>
-          </DialogHeader>
-          <UserForm 
-            action={editUserId ? editUserId.toString() : 'add'} 
-            onClose={handleCloseForm}
-            onSubmit={handleUserSubmit}
-          />
-        </DialogContent>
-      </Dialog>
+      <Sidebar />
+      <UserFormDialog
+        open={showForm}
+        onOpenChange={setShowForm}
+        editUserId={editUserId}
+        onClose={handleCloseForm}
+      />
     </div>
   )
 }
+
+function Sidebar() {
+  return (
+    <div className="flex flex-col gap-4">
+      <StudentsConfiguration />
+      <Card>
+        <CardHeader>
+          <CardTitle>Need help?</CardTitle>
+          <CardDescription className="text-wrap">
+            Read our documentation.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link href={"/help/users"}>
+            <Button size="sm" variant="secondary">
+              Find "Users"
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+interface UserFormDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  editUserId: number | null
+  onClose: () => void
+}
+
+function UserFormDialog({ open, onOpenChange, editUserId, onClose }: UserFormDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[825px]">
+        <DialogHeader>
+          <DialogTitle>{editUserId ? 'Edit User' : 'Add User'}</DialogTitle>
+        </DialogHeader>
+        <UserForm
+          action={editUserId ? editUserId.toString() : 'add'}
+          onClose={onClose}
+          onSubmit={onClose}
+        />
+      </DialogContent>
+    </Dialog>
+  )
+}
+

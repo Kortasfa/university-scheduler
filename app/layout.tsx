@@ -34,7 +34,7 @@ export default function RootLayout({
         >    
           {children}
         </ThemeProvider>
-        {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+        {/* {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />} */}
       </body>
     </html>
   );

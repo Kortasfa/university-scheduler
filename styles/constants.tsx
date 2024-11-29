@@ -3,11 +3,6 @@ import { BookOpen, Calendar, Settings, Users } from 'lucide-react';
 
 export const SIDENAV_ITEMS: SideNavItem[] = [
   {
-    title: 'Courses',
-    path: '/protected/admin/courses',
-    icon: <BookOpen className="h-4 w-4" />,
-  },
-  {
     title: 'Users',
     path: '/protected/admin/users',
     icon: <Users className="h-4 w-4" />,

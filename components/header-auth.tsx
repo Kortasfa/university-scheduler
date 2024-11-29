@@ -12,8 +12,7 @@ export default async function AuthButton() {
 
   if (!hasEnvVars) {
     return (
-      <>
-        <div className="flex gap-4 items-center">
+      <div className="sticky top-0 z-10 flex h-[57px] w-full items-center justify-between border-b bg-background px-4">
           <div>
             <Badge
               variant={"default"}
@@ -42,13 +41,12 @@ export default async function AuthButton() {
               <Link href="/sign-up">Sign up</Link>
             </Button>
           </div>
-        </div>
-      </>
+      </div>
     );
   }
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
+    <div className="sticky top-0 z-10 flex h-[57px] w-full items-center justify-between border-b bg-background px-4">
+      {user.email}
       <form action={signOutAction}>
         <Button type="submit" variant={"outline"}>
           Sign out
