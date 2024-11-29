@@ -1,8 +1,3 @@
-'use client'
-
-import * as React from "react"
-import { cn } from "@/lib/utils"
-
 const TIMES = [
   "08:00 - 08:45",
   "09:00 - 09:45",
@@ -145,50 +140,9 @@ const SCHEDULE_DATA: Schedule = {
   },
 }
 
-export function ScheduleTable() {
-  return (
-    <table className="w-full border-collapse">
-      <thead>
-        <tr className="bg-gray-50">
-          <th className="border p-2 text-left font-medium">Classes</th>
-          <th className="border p-2 text-left font-medium">Time</th>
-          {DAYS.map((day) => (
-            <th key={day} className="border p-2 text-left font-medium">
-              {day}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {GROUPS.map((group) => (
-          <React.Fragment key={group}>
-            {TIMES.map((time, timeIndex) => (
-              <tr key={`${group}-${time}`}>
-                {timeIndex === 0 && (
-                  <td rowSpan={TIMES.length} className="border p-2 align-middle text-center font-medium w-20">
-                    {group}
-                  </td>
-                )}
-                <td className="border p-2 text-center whitespace-nowrap w-32">{time}</td>
-                {DAYS.map((day) => {
-                  const classData = SCHEDULE_DATA[group]?.[time]?.[day]
-                  return (
-                    <td key={`${group}-${time}-${day}`} className="border p-2 w-40 h-20">
-                      {classData && (
-                        <div className={cn("p-2 rounded h-full flex flex-col justify-center items-center text-center", classData.color)}>
-                          <div className="font-medium text-lg">{classData.subject}</div>
-                          <div className="text-sm text-gray-600">{classData.teacher}</div>
-                        </div>
-                      )}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </React.Fragment>
-        ))}
-      </tbody>
-    </table>
-  )
+export {
+  SCHEDULE_DATA,
+  TIMES,
+  DAYS,
+  GROUPS
 }
-
