@@ -1,44 +1,33 @@
-import NextLogo from "./next-logo";
-import SupabaseLogo from "./supabase-logo";
+import { Calendar, Clock, DropletsIcon } from "lucide-react";
 
-export default function Header() {
+export default function Hero() {
   return (
-    <div className="flex flex-col gap-16 items-center">
-      <div className="flex gap-8 justify-center items-center">
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <SupabaseLogo />
-        </a>
-        <span className="border-l rotate-45 h-6" />
-        <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <NextLogo />
-        </a>
+    <section className="bg-blue-600 text-white py-20">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="md:w-1/2 mb-10 md:mb-0">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">University Schedule Maker App</h1>
+            <p className="text-xl mb-8">A web-based software solution for universities that allows users to create class timetables with ease.</p>
+            <ul className="space-y-4">
+              <li className="flex items-center">
+                <DropletsIcon className="mr-2" />
+                Intuitive user interface with drag-and-drop support
+              </li>
+              <li className="flex items-center">
+                <Clock className="mr-2" />
+                Auto-assignment feature saves time on creating timetables
+              </li>
+              <li className="flex items-center">
+                <Calendar className="mr-2" />
+                Ensures compliance with government regulations
+              </li>
+            </ul>
+          </div>
+          <div className="md:w-1/2">
+            <img src="/placeholder.svg?height=400&width=600" alt="School Schedule Maker App Interface" className="rounded-lg shadow-lg" />
+          </div>
+        </div>
       </div>
-      <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-      <p className="text-3xl lg:text-4xl !leading-tight mx-auto max-w-xl text-center">
-        The fastest way to build apps with{" "}
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Supabase
-        </a>{" "}
-        and{" "}
-        <a
-          href="https://nextjs.org/"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Next.js
-        </a>
-      </p>
-      <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
-    </div>
+    </section>
   );
 }

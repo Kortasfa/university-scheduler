@@ -1,12 +1,6 @@
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
-import { Inter } from 'next/font/google'
-import { EnvVarWarning } from "@/components/env-var-warning";
-import HeaderAuth from "@/components/header-auth";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-
-const inter = Inter({ subsets: ['latin'] })
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -34,7 +28,6 @@ export default function RootLayout({
         >    
           {children}
         </ThemeProvider>
-        {/* {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />} */}
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Plus, Search } from 'lucide-react'
 import { deleteUser } from "@/lib/actions"
-import { UsersTable, UserTableView } from "@/components/users/users-table"
+import { UsersTable } from "@/components/users/users-table"
 import { UsersTableSkeleton } from "@/components/users/users-table-skeleton"
 import StudentsConfiguration from "@/components/users/configuration"
 import UserForm from "@/components/users/user-form"
