@@ -15,7 +15,7 @@ interface Class {
   teacher: string
 }
 
-type Schedule = Record<string, Record<string, Record<string, Class>>>
+type Schedule = Record<string, Record<string , Record<string, Class>>>
 
 const SCHEDULE_DATA: Schedule = {
   '7A': {
@@ -140,6 +140,7 @@ const SCHEDULE_DATA: Schedule = {
 }
 
 export {
+  type Schedule,
   SCHEDULE_DATA,
   TIMES,
   DAYS,
