@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { DatePicker } from "@/components/ui/date-picker"
+
 interface CalendarSettingsProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -36,19 +36,31 @@ export interface PeriodTime {
 
 export interface CalendarSettings {
   periods: PeriodTime[],
-  from: Date,
-  to: Date,
 }
 
-// Add form schema
+// Update form schema with custom validation
 const FormSchema = z.object({
-  from: z.date(),
-  to: z.date(),
   periods: z.array(z.object({
     startTime: z.string(),
     endTime: z.string(),
-  })).min(1, "At least one period is required"),
-})
+  }))
+  .min(1, "At least one period is required")
+  .refine((periods) => {
+    // Check each period's start time is before end time
+    const validTimes = periods.every(period => 
+      period.startTime < period.endTime
+    );
+    if (!validTimes) return false;
+
+    // Check periods are sequential
+    for (let i = 1; i < periods.length; i++) {
+      if (periods[i].startTime < periods[i-1].endTime) {
+        return false;
+      }
+    }
+    return true;
+  }, "Periods must be sequential and end times must be after start times")
+});
 
 export function CalendarSettingsDialog({
   open,
@@ -59,15 +71,24 @@ export function CalendarSettingsDialog({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      from: initialSettings.from,
-      to: initialSettings.to,
       periods: initialSettings.periods,
     },
   })
 
   const addPeriod = () => {
-    const currentPeriods = form.getValues("periods")
-    form.setValue("periods", [...currentPeriods, { startTime: "08:00", endTime: "08:45" }])
+    const currentPeriods = form.getValues("periods");
+    const lastPeriod = currentPeriods[currentPeriods.length - 1];
+    const newStartTime = lastPeriod.endTime;
+    
+    // Calculate new end time (45 minutes after start)
+    const [hours, minutes] = newStartTime.split(':').map(Number);
+    const endDate = new Date(2000, 0, 1, hours, minutes + 45);
+    const newEndTime = `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
+
+    form.setValue("periods", [...currentPeriods, { 
+      startTime: newStartTime, 
+      endTime: newEndTime 
+    }]);
   }
 
   const removePeriod = (index: number) => {
@@ -78,8 +99,6 @@ export function CalendarSettingsDialog({
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     onSave({
-      from: data.from,
-      to: data.to,
       periods: data.periods,
     })
   }
@@ -94,37 +113,6 @@ export function CalendarSettingsDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 py-4">
-              <div className="flex justify-between">
-                <div className="flex gap-4">
-                  <FormField
-                    control={form.control}
-                    name="from"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>From</FormLabel>
-                        <FormControl>
-                          <DatePicker date={field.value} setDate={(date) => field.onChange(date)} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="to"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>To</FormLabel>
-                        <FormControl>
-                          <DatePicker date={field.value} setDate={(date) => field.onChange(date)} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-
               <div className="max-h-[440px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 
                 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 pr-2 space-y-4"
                 style={{

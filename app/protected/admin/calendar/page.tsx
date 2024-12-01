@@ -5,7 +5,9 @@ import { CalendarTable } from "@/components/calendar/calendar-table"
 import { CalendarToolbar } from "@/components/calendar/calendar-toolbar"
 import { ClassInfoDialog } from "@/components/calendar/class-info-panel"
 import { DAYS, GROUPS, Schedule, SCHEDULE_DATA, TIMES } from "@/mock/shedule-table"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { getCalendarSettings, insertCalendarSettings } from "./actions"
+import { useToast } from "@/hooks/use-toast"
 
 interface ClassData {
   subject: string
@@ -16,22 +18,45 @@ interface ClassData {
 }
 
 export default function CalendarPage() {
+  const { toast } = useToast()
   const [scheduleData, setScheduleData] = useState(SCHEDULE_DATA)
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null)
-  const [calendarSettings, setCalendarSettings] = useState<CalendarSettings>({
-    periods: [
-      { startTime: '08:00', endTime: '08:45' },
-      { startTime: '09:00', endTime: '09:45' },
-      { startTime: '10:00', endTime: '10:45' },
-      { startTime: '11:00', endTime: '11:45' },
-      { startTime: '12:00', endTime: '12:45' },
-      { startTime: '13:00', endTime: '13:45' },
-      { startTime: '14:00', endTime: '14:45' },
-      { startTime: '15:00', endTime: '15:45' },
-    ],
-    from: new Date(new Date().getFullYear(), 0, 1), // January 1st of current year
-    to: new Date(new Date().getFullYear(), 11, 31), // December 31st of current year
-  })
+  const [calendarSettings, setCalendarSettings] = useState<CalendarSettings | null>(null)
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await getCalendarSettings()
+        if (settings) {
+          setCalendarSettings({
+            periods: settings.periods.map(p => ({
+              startTime: p.start_time,
+              endTime: p.end_time
+            })),
+          })
+        } else if (isFirstLoad) {
+          setCalendarSettings({
+            periods: [],
+          })
+          toast({
+            title: "No calendar settings found",
+            description: "Please configure your calendar settings to get started."
+          })
+        }
+      } catch (error) {
+        console.error("Failed to load calendar settings:", error)
+        toast({
+          title: "Error",
+          description: "Failed to load calendar settings",
+          variant: "destructive"
+        })
+      } finally {
+        setIsFirstLoad(false)
+      }
+    }
+    loadSettings()
+  }, [isFirstLoad])
 
   const handleCellClick = (group: string | null, time: string | null, day: string | null) => {
     if (!group || !time || !day) {
@@ -67,11 +92,36 @@ export default function CalendarPage() {
     setSelectedClass(null)
   }
 
+  const handleSettingsChange = async (newSettings: CalendarSettings) => {
+    try {
+      await insertCalendarSettings(
+        newSettings.periods
+      )
+      setCalendarSettings(newSettings)
+    } catch (error) {
+      console.error("Failed to update calendar settings:", error)
+      toast({
+        title: "Error",
+        description: "Failed to update calendar settings",
+        variant: "destructive"
+      })
+      const settings = await getCalendarSettings()
+      if (settings) {
+        setCalendarSettings({
+          periods: settings.periods.map(p => ({
+            startTime: p.start_time,
+            endTime: p.end_time
+          })),
+        })
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col">
       <CalendarToolbar
         onAddClass={() => setSelectedClass({ subject: '', teacher: '', group: GROUPS[0], time: TIMES[0], day: DAYS[0] })}
-        onSearch={(query) => { 
+        onSearch={(query) => {
           if (!query) {
             setScheduleData(SCHEDULE_DATA);
             return;
@@ -81,11 +131,11 @@ export default function CalendarPage() {
           setScheduleData(
             Object.keys(SCHEDULE_DATA).reduce((acc: Schedule, group: string) => {
               acc[group] = {};
-              
+
               // Copy over matching time slots
               Object.entries(SCHEDULE_DATA[group]).forEach(([time, timeSlots]) => {
                 acc[group][time] = {};
-                
+
                 // Copy over matching classes
                 Object.entries(timeSlots).forEach(([day, classData]) => {
                   if (
@@ -97,17 +147,17 @@ export default function CalendarPage() {
                   }
                 });
               });
-              
+
               // Remove empty time slots
               if (Object.keys(acc[group]).length === 0) {
                 delete acc[group];
               }
-              
+
               return acc;
             }, {})
           );
         }}
-        onSettingsChange={setCalendarSettings}
+        onSettingsChange={handleSettingsChange}
         initialSettings={calendarSettings}
       />
       <CalendarTable

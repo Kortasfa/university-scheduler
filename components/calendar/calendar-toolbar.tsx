@@ -11,8 +11,8 @@ import { useState } from 'react'
 interface CalendarToolbarProps {
   onAddClass?: () => void
   onSearch?: (query: string) => void
-  onSettingsChange?: (settings: CalendarSettings) => void
-  initialSettings: CalendarSettings
+  onSettingsChange: (settings: CalendarSettings) => void
+  initialSettings: CalendarSettings | null
 }
 
 export function CalendarToolbar({ 
@@ -107,15 +107,17 @@ export function CalendarToolbar({
           </div>
         </TooltipProvider>
       </div>
-      <CalendarSettingsDialog
-        open={settingsOpen}
-        onOpenChange={setSettingsOpen}
-        onSave={(settings) => {
-          onSettingsChange?.(settings)
+      {initialSettings && (
+        <CalendarSettingsDialog
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
+          onSave={(settings) => {
+          onSettingsChange(settings)
           setSettingsOpen(false)
         }}
-        initialSettings={initialSettings}
-      />
+          initialSettings={initialSettings}
+        />
+      )}
     </>
   )
 }

@@ -130,6 +130,14 @@ export const resetPasswordAction = async (formData: FormData) => {
 export const getUsersAction = async () => {
   const supabase = await createClient();
 
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    return {
+      error: true,
+      message: "Unauthorized access",
+    };
+  }
+
   const {
     data,
     error
