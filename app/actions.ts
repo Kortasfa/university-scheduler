@@ -159,8 +159,10 @@ export const getUsersAction = async () => {
       name: user.first_name + " " + user.surname + " " + user.middle_name,
       id: user.id,
       avatar: user.avatar_path,
-      group: user.group[0].name, //TODO: fix
-      role: user.role[0].name, //TODO: fix
+      // @ts-ignore
+      group: user.group.name,
+      // @ts-ignore
+      role: user.role.name,
     })),
   };
 };

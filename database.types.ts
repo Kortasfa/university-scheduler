@@ -14,21 +14,18 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: number
-          is_deleted: number | null
           name: string
         }
         Insert: {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name: string
         }
         Update: {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name?: string
         }
         Relationships: []
@@ -39,39 +36,27 @@ export type Database = {
           created_at: string | null
           end_in: string
           id: number
-          is_deleted: number | null
-          is_online: number | null
           location_id: number | null
-          should_repeat: number | null
           started_at: string
           type: number
-          weak_color: number | null
         }
         Insert: {
           course_id?: number | null
           created_at?: string | null
           end_in: string
           id?: number
-          is_deleted?: number | null
-          is_online?: number | null
           location_id?: number | null
-          should_repeat?: number | null
           started_at: string
           type: number
-          weak_color?: number | null
         }
         Update: {
           course_id?: number | null
           created_at?: string | null
           end_in?: string
           id?: number
-          is_deleted?: number | null
-          is_online?: number | null
           location_id?: number | null
-          should_repeat?: number | null
           started_at?: string
           type?: number
-          weak_color?: number | null
         }
         Relationships: [
           {
@@ -95,7 +80,6 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: number
-          is_deleted: number | null
           name: string
           subject_id: number | null
           teacher_id: number | null
@@ -104,7 +88,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name: string
           subject_id?: number | null
           teacher_id?: number | null
@@ -113,7 +96,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name?: string
           subject_id?: number | null
           teacher_id?: number | null
@@ -141,21 +123,18 @@ export type Database = {
           created_at: string | null
           group_id: number | null
           id: number
-          is_deleted: number | null
         }
         Insert: {
           course_id?: number | null
           created_at?: string | null
           group_id?: number | null
           id?: number
-          is_deleted?: number | null
         }
         Update: {
           course_id?: number | null
           created_at?: string | null
           group_id?: number | null
           id?: number
-          is_deleted?: number | null
         }
         Relationships: [
           {
@@ -179,21 +158,18 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: number
-          is_deleted: number | null
           name: string
         }
         Insert: {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name: string
         }
         Update: {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name?: string
         }
         Relationships: []
@@ -204,7 +180,6 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: number
-          is_deleted: number | null
           name: string
         }
         Insert: {
@@ -212,7 +187,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name: string
         }
         Update: {
@@ -220,7 +194,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: number
-          is_deleted?: number | null
           name?: string
         }
         Relationships: []
@@ -268,7 +241,6 @@ export type Database = {
           first_name: string
           group_id: number | null
           id: number
-          is_deleted: number | null
           middle_name: string | null
           role_id: number | null
           surname: string
@@ -279,7 +251,6 @@ export type Database = {
           first_name: string
           group_id?: number | null
           id?: number
-          is_deleted?: number | null
           middle_name?: string | null
           role_id?: number | null
           surname: string
@@ -290,7 +261,6 @@ export type Database = {
           first_name?: string
           group_id?: number | null
           id?: number
-          is_deleted?: number | null
           middle_name?: string | null
           role_id?: number | null
           surname?: string
