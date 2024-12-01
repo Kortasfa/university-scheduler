@@ -4,9 +4,11 @@ import { Button } from "./ui/button";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function HeaderAuth() {
+  const supabase = await createClient();
+
   const {
     data: { user },
-  } = await createClient().auth.getUser();
+  } = await supabase.auth.getUser();
 
   return user ? (
     <div className="sticky top-0 z-10 flex h-[57px] w-full items-center justify-between border-b bg-background px-4">

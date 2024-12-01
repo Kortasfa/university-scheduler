@@ -159,8 +159,8 @@ export const getUsersAction = async () => {
       name: user.first_name + " " + user.surname + " " + user.middle_name,
       id: user.id,
       avatar: user.avatar_path,
-      group: user.group.name,
-      role: user.role.name,
+      group: user.group[0].name, //TODO: fix
+      role: user.role[0].name, //TODO: fix
     })),
   };
 };

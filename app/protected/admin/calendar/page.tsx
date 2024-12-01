@@ -1,5 +1,6 @@
 'use client'
 
+import { CalendarSettings } from "@/components/calendar/calendar-settings"
 import { CalendarTable } from "@/components/calendar/calendar-table"
 import { CalendarToolbar } from "@/components/calendar/calendar-toolbar"
 import { ClassInfoDialog } from "@/components/calendar/class-info-panel"
@@ -17,6 +18,20 @@ interface ClassData {
 export default function CalendarPage() {
   const [scheduleData, setScheduleData] = useState(SCHEDULE_DATA)
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null)
+  const [calendarSettings, setCalendarSettings] = useState<CalendarSettings>({
+    periods: [
+      { startTime: '08:00', endTime: '08:45' },
+      { startTime: '09:00', endTime: '09:45' },
+      { startTime: '10:00', endTime: '10:45' },
+      { startTime: '11:00', endTime: '11:45' },
+      { startTime: '12:00', endTime: '12:45' },
+      { startTime: '13:00', endTime: '13:45' },
+      { startTime: '14:00', endTime: '14:45' },
+      { startTime: '15:00', endTime: '15:45' },
+    ],
+    from: new Date(new Date().getFullYear(), 0, 1), // January 1st of current year
+    to: new Date(new Date().getFullYear(), 11, 31), // December 31st of current year
+  })
 
   const handleCellClick = (group: string | null, time: string | null, day: string | null) => {
     if (!group || !time || !day) {
@@ -92,6 +107,8 @@ export default function CalendarPage() {
             }, {})
           );
         }}
+        onSettingsChange={setCalendarSettings}
+        initialSettings={calendarSettings}
       />
       <CalendarTable
         scheduleData={scheduleData}
