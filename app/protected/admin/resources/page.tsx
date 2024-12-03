@@ -9,8 +9,9 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { GROUP_COLUMNS } from "@/styles/constants"
 import { USER_COLUMNS } from "@/styles/constants"
+import { Suspense } from "react"
 
-export default function ResourcesPage() {
+function ResourcesContent() { // TODO: rewrite router
   const router = useRouter()
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'users'
@@ -21,39 +22,44 @@ export default function ResourcesPage() {
     }
   }, [searchParams, router])
 
-
   return (
-    <div className="space-y-4">
-      <Tabs 
-        value={tab} 
-        onValueChange={(value) => router.push(`/protected/admin/resources?tab=${value}`)}
-      >
-        <TabsList>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="groups">Groups</TabsTrigger>
-        </TabsList>
-        <TabsContent value="users">
-          <ResourcePage
-            resourceName="Users"
-            fetchResources={getUsersAction}
-            deleteResource={(id) => deleteResourceAction(id, "user")}
-            ResourceForm={UserForm}
-            columns={USER_COLUMNS}
-            helpUrl="/help/users"
-          />
-        </TabsContent>
-        <TabsContent value="groups">
-          <ResourcePage
-            resourceName="Groups"
-            fetchResources={getGroupsAction}
-            deleteResource={(id) => deleteResourceAction(id, "group")}
-            ResourceForm={GroupForm}
-            columns={GROUP_COLUMNS}
-            helpUrl="/help/groups"
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
+    <Tabs
+      value={tab}
+      onValueChange={(value) => router.push(`/protected/admin/resources?tab=${value}`)}
+    >
+      <TabsList>
+        <TabsTrigger value="users">Users</TabsTrigger>
+        <TabsTrigger value="groups">Groups</TabsTrigger>
+      </TabsList>
+      <TabsContent value="users">
+        <ResourcePage
+          resourceName="Users"
+          fetchResources={getUsersAction}
+          deleteResource={(id) => deleteResourceAction(id, "user")}
+          ResourceForm={UserForm}
+          columns={USER_COLUMNS}
+          helpUrl="/help/users"
+        />
+      </TabsContent>
+      <TabsContent value="groups">
+        <ResourcePage
+          resourceName="Groups"
+          fetchResources={getGroupsAction}
+          deleteResource={(id) => deleteResourceAction(id, "group")}
+          ResourceForm={GroupForm}
+          columns={GROUP_COLUMNS}
+          helpUrl="/help/groups"
+        />
+      </TabsContent>
+    </Tabs>
+  )
+}
+
+export default function ResourcesPage() {
+  return (
+    <Suspense>
+      <ResourcesContent />
+    </Suspense>
   )
 }
 

@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { CalendarSettingsDialog, CalendarSettings } from './calendar-settings'
+import { CalendarSettingsDialog, PeriodTime } from './calendar-settings'
 import { useState } from 'react'
 
 interface CalendarToolbarProps {
   onAddClass?: () => void
   onSearch?: (query: string) => void
-  onSettingsChange: (settings: CalendarSettings) => void
-  initialSettings: CalendarSettings | null
+  onSettingsChange: (settings: PeriodTime[]) => void
+  initialSettings: PeriodTime[] | null
 }
 
 export function CalendarToolbar({ 

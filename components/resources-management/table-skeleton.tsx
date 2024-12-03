@@ -27,7 +27,7 @@ export function ResourceTableSkeleton<T>({ columns }: ResourceTableSkeletonProps
         {[...Array(5)].map((_, index) => (
           <TableRow key={index}>
             {columns.map((column) => (
-              <TableCell key={`${index}-${column.accessorKey}`}>
+              <TableCell key={`${index}-${String(column.accessorKey)}`}>
                 <Skeleton className="h-4 w-full" />
               </TableCell>
             ))}

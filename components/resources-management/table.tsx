@@ -36,7 +36,7 @@ export function ResourceTable<T extends { id: string }>({
         {resources.map((resource) => (
           <TableRow key={resource.id}>
             {columns.map((column) => (
-              <TableCell key={`${resource.id}-${column.accessorKey}`} className={column.style}>
+              <TableCell key={`${resource.id}-${String(column.accessorKey)}`} className={column.style}>
                 {resource[column.accessorKey] as string}
               </TableCell>
             ))}
