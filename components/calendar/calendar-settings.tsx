@@ -25,17 +25,13 @@ import {
 interface CalendarSettingsProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSave: (settings: CalendarSettings) => void
-  initialSettings: CalendarSettings
+  onSave: (settings: PeriodTime[]) => void
+  initialSettings: PeriodTime[]
 }
 
 export interface PeriodTime {
   startTime: string
   endTime: string
-}
-
-export interface CalendarSettings {
-  periods: PeriodTime[],
 }
 
 // Update form schema with custom validation
@@ -71,7 +67,7 @@ export function CalendarSettingsDialog({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      periods: initialSettings.periods,
+      periods: initialSettings,
     },
   })
 
@@ -98,9 +94,7 @@ export function CalendarSettingsDialog({
   }
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    onSave({
-      periods: data.periods,
-    })
+    onSave(data.periods)
   }
 
   return (

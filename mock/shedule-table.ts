@@ -1,12 +1,3 @@
-const TIMES = [
-  "08:00 - 08:45",
-  "09:00 - 09:45",
-  "10:00 - 10:45",
-  "11:00 - 11:45",
-  "12:00 - 12:45",
-  "13:00 - 13:45"
-]
-
 const DAYS = ['Mon, Jun 12', 'Tue, Jun 13', 'Wed, Jun 14', 'Thu, Jun 15', 'Fri, Jun 16']
 const GROUPS = ['7A', '5B', '8A']
 
@@ -139,10 +130,14 @@ const SCHEDULE_DATA: Schedule = {
   },
 }
 
+const formatTimeSlot = (startTime: string, endTime: string) => {
+  return `${startTime} - ${endTime}`
+}
+
 export {
   type Schedule,
   SCHEDULE_DATA,
-  TIMES,
+  formatTimeSlot,
   DAYS,
   GROUPS
 }

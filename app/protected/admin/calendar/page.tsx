@@ -1,13 +1,13 @@
 'use client'
 
-import { CalendarSettings } from "@/components/calendar/calendar-settings"
 import { CalendarTable } from "@/components/calendar/calendar-table"
 import { CalendarToolbar } from "@/components/calendar/calendar-toolbar"
 import { ClassInfoDialog } from "@/components/calendar/class-info-panel"
-import { DAYS, GROUPS, Schedule, SCHEDULE_DATA, TIMES } from "@/mock/shedule-table"
+import { DAYS, GROUPS, Schedule, SCHEDULE_DATA } from "@/mock/shedule-table"
 import React, { useEffect, useState } from "react"
 import { getCalendarSettings, insertCalendarSettings } from "./actions"
 import { useToast } from "@/hooks/use-toast"
+import { PeriodTime } from "@/components/calendar/calendar-settings"
 
 interface ClassData {
   subject: string
@@ -21,7 +21,7 @@ export default function CalendarPage() {
   const { toast } = useToast()
   const [scheduleData, setScheduleData] = useState(SCHEDULE_DATA)
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null)
-  const [calendarSettings, setCalendarSettings] = useState<CalendarSettings | null>(null)
+  const [calendarSettings, setCalendarSettings] = useState<PeriodTime[] | null>(null)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   useEffect(() => {
@@ -29,16 +29,14 @@ export default function CalendarPage() {
       try {
         const settings = await getCalendarSettings()
         if (settings) {
-          setCalendarSettings({
-            periods: settings.periods.map(p => ({
-              startTime: p.start_time,
-              endTime: p.end_time
-            })),
-          })
+          const periods = settings.periods.map(p => ({
+            startTime: p.start_time,
+            endTime: p.end_time
+          }))
+          setCalendarSettings(periods)
+          
         } else if (isFirstLoad) {
-          setCalendarSettings({
-            periods: [],
-          })
+          setCalendarSettings([])
           toast({
             title: "No calendar settings found",
             description: "Please configure your calendar settings to get started."
@@ -92,11 +90,9 @@ export default function CalendarPage() {
     setSelectedClass(null)
   }
 
-  const handleSettingsChange = async (newSettings: CalendarSettings) => {
+  const handleSettingsChange = async (newSettings: PeriodTime[]) => {
     try {
-      await insertCalendarSettings(
-        newSettings.periods
-      )
+      await insertCalendarSettings(newSettings)
       setCalendarSettings(newSettings)
     } catch (error) {
       console.error("Failed to update calendar settings:", error)
@@ -107,12 +103,12 @@ export default function CalendarPage() {
       })
       const settings = await getCalendarSettings()
       if (settings) {
-        setCalendarSettings({
-          periods: settings.periods.map(p => ({
+        setCalendarSettings(
+          settings.periods.map(p => ({
             startTime: p.start_time,
             endTime: p.end_time
           })),
-        })
+        )
       }
     }
   }
@@ -120,7 +116,13 @@ export default function CalendarPage() {
   return (
     <div className="flex flex-col">
       <CalendarToolbar
-        onAddClass={() => setSelectedClass({ subject: '', teacher: '', group: GROUPS[0], time: TIMES[0], day: DAYS[0] })}
+        onAddClass={() => setSelectedClass({ 
+          subject: '', 
+          teacher: '', 
+          group: GROUPS[0], 
+          time: calendarSettings?.[0]?.startTime || '', 
+          day: DAYS[0] 
+        })}
         onSearch={(query) => {
           if (!query) {
             setScheduleData(SCHEDULE_DATA);
@@ -160,11 +162,14 @@ export default function CalendarPage() {
         onSettingsChange={handleSettingsChange}
         initialSettings={calendarSettings}
       />
-      <CalendarTable
-        scheduleData={scheduleData}
-        selectedClass={selectedClass}
-        onCellClick={handleCellClick}
-      />
+      {calendarSettings && (
+        <CalendarTable
+          scheduleData={scheduleData}
+          selectedClass={selectedClass}
+          onCellClick={handleCellClick}
+          calendarSettings={calendarSettings}
+        />
+      )}
       <ClassInfoDialog
         classData={selectedClass}
         onClose={() => handleCellClick(null, null, null)}

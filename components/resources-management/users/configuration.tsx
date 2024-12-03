@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { groups, streams, years } from "@/lib/data"
-import { Combobox } from "../ui/combobox"
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
+import { Combobox } from "../../ui/combobox"
+import { Tabs, TabsList, TabsTrigger } from "../../ui/tabs"
 
 export default function StudentsConfiguration() {
     const [selectedStream, setSelectedStream] = useState("")

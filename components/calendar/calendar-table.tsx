@@ -1,8 +1,9 @@
 'use client'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DAYS, GROUPS, Schedule, TIMES } from "@/mock/shedule-table"
+import { DAYS, GROUPS, Schedule } from "@/mock/shedule-table"
 import React, { useState } from "react"
+import { PeriodTime } from "./calendar-settings"
 
 interface ClassData {
   subject: string
@@ -24,9 +25,10 @@ interface CalendarProps {
   scheduleData: Schedule
   selectedClass: ClassData | null
   onCellClick: (group: string | null, time: string | null, day: string | null) => void
+  calendarSettings: PeriodTime[]
 }
-
-export function CalendarTable({ scheduleData, selectedClass, onCellClick }: CalendarProps) {
+  
+export function CalendarTable({ scheduleData, selectedClass, onCellClick, calendarSettings }: CalendarProps) {
   const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
 
   return (
@@ -47,26 +49,26 @@ export function CalendarTable({ scheduleData, selectedClass, onCellClick }: Cale
             </TableHeader>
             <TableBody>
               {GROUPS.map((group) => (
-                TIMES.map((time, timeIndex) => (
+                calendarSettings.map((time, timeIndex) => (
                   <TableRow
-                    key={`${group}-${time}`}
+                    key={`${group}-${time.startTime}-${time.endTime}`}
                     onMouseEnter={() => setHoveredGroup(group)}
                     onMouseLeave={() => setHoveredGroup(null)}
                   >
                     {timeIndex === 0 && (
                       <TableCell
-                        rowSpan={TIMES.length}
+                        rowSpan={calendarSettings.length}
                         className={`align-middle text-center font-medium border-r transition-colors duration-200 
                           ${hoveredGroup === group ? 'bg-muted' : ''}`}
                       >
                         {group}
                       </TableCell>
                     )}
-                    <TableCell className="text-center whitespace-nowrap border-r">{time}</TableCell>
+                    <TableCell className="text-center whitespace-nowrap border-r">{time.startTime}-{time.endTime}</TableCell>
                     {DAYS.map((day, dayIndex) => {
-                      const classData = scheduleData[group]?.[time]?.[day]
+                      const classData = scheduleData[group]?.[time.startTime]?.[day]
                       const isSelected = selectedClass?.group === group &&
-                        selectedClass?.time === time &&
+                        selectedClass?.time === time.startTime &&
                         selectedClass?.day === day
                       return (
                         <TableCell
@@ -75,7 +77,7 @@ export function CalendarTable({ scheduleData, selectedClass, onCellClick }: Cale
                             ${isSelected ? 'ring-4 ring-primary ring-opacity-50 scale-105 z-10' : ''}
                             ${dayIndex !== DAYS.length - 1 ? 'border-r' : ''}
                           `}
-                          onClick={() => onCellClick(group, time, day)}
+                          onClick={() => onCellClick(group, time.startTime, day)}
                         >
                           {classData ? (
                             <div

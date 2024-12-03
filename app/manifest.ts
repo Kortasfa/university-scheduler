@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Study',
     short_name: 'Study',
     description: 'Web app build with Next JS',
-    start_url: '/admin/users',
+    start_url: '/sign-in',
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#000000',

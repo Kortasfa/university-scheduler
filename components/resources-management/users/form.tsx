@@ -22,8 +22,7 @@ import {
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { groups, streams, User, Student, years } from '@/lib/data'
-import { getUserById } from '@/lib/actions'
-import { Combobox } from '../ui/combobox'
+import { Combobox } from '../../ui/combobox'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -47,7 +46,7 @@ interface UserFormProps {
   onSubmit: () => void;
 }
 
-export default function UserForm({ action, onClose, onSubmit }: UserFormProps) {
+export function UserForm({ action, onClose, onSubmit }: UserFormProps) {
   const [user, setUser] = useState<User | Student | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [selectedStream, setSelectedStream] = useState("")
@@ -68,20 +67,20 @@ export default function UserForm({ action, onClose, onSubmit }: UserFormProps) {
 
   useEffect(() => {
     if (action !== 'add') {
-      getUserById(parseInt(action, 10)).then(fetchedUser => {
-        if (fetchedUser) {
-          setUser(fetchedUser)
-          form.reset({
-            name: fetchedUser.name,
-            email: fetchedUser.email,
-            role: fetchedUser.role as "Student" | "Instructor" | "Admin",
-            stream: (fetchedUser as Student).stream || "",
-            year: (fetchedUser as Student).year?.toString() || "",
-            group: (fetchedUser as Student).group || "",
-          })
-          setAvatarPreview(fetchedUser.avatar || null)
-        }
-      })
+      // getUserById(parseInt(action, 10)).then(fetchedUser => {
+      //   if (fetchedUser) {
+      //     setUser(fetchedUser)
+      //     form.reset({
+      //       name: fetchedUser.name,
+      //       email: fetchedUser.email,
+      //       role: fetchedUser.role as "Student" | "Instructor" | "Admin",
+      //       stream: (fetchedUser as Student).stream || "",
+      //       year: (fetchedUser as Student).year?.toString() || "",
+      //       group: (fetchedUser as Student).group || "",
+      //     })
+      //     setAvatarPreview(fetchedUser.avatar || null)
+      //   }
+      // })
     }
   }, [action, form])
 
