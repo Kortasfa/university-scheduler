@@ -29,12 +29,7 @@ export default function CalendarPage() {
       try {
         const settings = await getCalendarSettings()
         if (settings) {
-          const periods = settings.periods.map(p => ({
-            startTime: p.start_time,
-            endTime: p.end_time
-          }))
-          setCalendarSettings(periods)
-          
+          setCalendarSettings(settings.periods)
         } else if (isFirstLoad) {
           setCalendarSettings([])
           toast({
@@ -43,7 +38,6 @@ export default function CalendarPage() {
           })
         }
       } catch (error) {
-        console.error("Failed to load calendar settings:", error)
         toast({
           title: "Error",
           description: "Failed to load calendar settings",
@@ -95,21 +89,13 @@ export default function CalendarPage() {
       await insertCalendarSettings(newSettings)
       setCalendarSettings(newSettings)
     } catch (error) {
-      console.error("Failed to update calendar settings:", error)
       toast({
         title: "Error",
         description: "Failed to update calendar settings",
         variant: "destructive"
       })
       const settings = await getCalendarSettings()
-      if (settings) {
-        setCalendarSettings(
-          settings.periods.map(p => ({
-            startTime: p.start_time,
-            endTime: p.end_time
-          })),
-        )
-      }
+      setCalendarSettings(settings.periods)
     }
   }
 

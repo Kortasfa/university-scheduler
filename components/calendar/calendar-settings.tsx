@@ -30,6 +30,7 @@ interface CalendarSettingsProps {
 }
 
 export interface PeriodTime {
+  periodOrder: number,
   startTime: string
   endTime: string
 }
@@ -37,6 +38,7 @@ export interface PeriodTime {
 // Update form schema with custom validation
 const FormSchema = z.object({
   periods: z.array(z.object({
+    periodOrder: z.number(),
     startTime: z.string(),
     endTime: z.string(),
   }))
@@ -75,13 +77,12 @@ export function CalendarSettingsDialog({
     const currentPeriods = form.getValues("periods");
     const lastPeriod = currentPeriods[currentPeriods.length - 1];
     const newStartTime = lastPeriod.endTime;
-    
-    // Calculate new end time (45 minutes after start)
     const [hours, minutes] = newStartTime.split(':').map(Number);
     const endDate = new Date(2000, 0, 1, hours, minutes + 45);
     const newEndTime = `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
 
     form.setValue("periods", [...currentPeriods, { 
+      periodOrder: currentPeriods.length + 1,
       startTime: newStartTime, 
       endTime: newEndTime 
     }]);

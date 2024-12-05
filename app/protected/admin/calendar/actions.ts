@@ -17,18 +17,18 @@ export const insertCalendarSettings = async (periods: PeriodTime[]) => {
 
   if (deleteError) throw deleteError;
 
-  const periodsToInsert = periods.map((period, index) => ({
+  const periodsToInsert = periods.map(period => ({
     user_id: user.id,
     start_time: period.startTime,
     end_time: period.endTime,
-    period_order: index + 1
+    period_order: period.periodOrder
   }));
 
-  const { error: periodsError } = await supabase
+  const { error: insertError } = await supabase
     .from('periods')
     .insert(periodsToInsert);
 
-  if (periodsError) throw periodsError;
+  if (insertError) throw insertError;
 };
 
 export const getCalendarSettings = async () => {
@@ -40,13 +40,17 @@ export const getCalendarSettings = async () => {
 
   const { data: periods, error: periodsError } = await supabase
     .from('periods')
-    .select('id, start_time, end_time, period_order')
+    .select('start_time, end_time, period_order')
     .eq('user_id', user.id)
     .order('period_order', { ascending: true });
 
   if (periodsError) throw periodsError;
   
   return {
-    periods: periods || []
-  };
+    periods: periods.map(period => ({
+      periodOrder: period.period_order,
+      startTime: period.start_time,
+      endTime: period.end_time,
+    })
+  )};
 };
