@@ -35,7 +35,6 @@ export interface PeriodTime {
   endTime: string
 }
 
-// Update form schema with custom validation
 const FormSchema = z.object({
   periods: z.array(z.object({
     periodOrder: z.number(),
@@ -44,13 +43,11 @@ const FormSchema = z.object({
   }))
   .min(1, "At least one period is required")
   .refine((periods) => {
-    // Check each period's start time is before end time
     const validTimes = periods.every(period => 
       period.startTime < period.endTime
     );
     if (!validTimes) return false;
 
-    // Check periods are sequential
     for (let i = 1; i < periods.length; i++) {
       if (periods[i].startTime < periods[i-1].endTime) {
         return false;

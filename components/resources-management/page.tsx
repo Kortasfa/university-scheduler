@@ -79,7 +79,7 @@ export function ResourcePage<T extends { id: string; name: string }>({
   }
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 mt-2">
       <div className="flex-1">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

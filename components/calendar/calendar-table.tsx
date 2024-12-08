@@ -1,34 +1,39 @@
 'use client'
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DAYS, GROUPS, Schedule } from "@/mock/shedule-table"
 import React, { useState } from "react"
 import { PeriodTime } from "./calendar-settings"
+import { getCurrentWeekDays, getSubjectColor } from "./utils"
 
-interface ClassData {
-  subject: string
-  teacher: string
-  group: string
-  time: string
-  day: string
+export interface GroupData {
+  name: string
+  id: string
 }
 
-const getSubjectColor = (subject: string): string => {
-  const hash = subject.split('').reduce((acc, char) => {
-    return char.charCodeAt(0) + ((acc << 5) - acc)
-  }, 0)
-  const hue = Math.abs(hash % 360)
-  return `hsl(${hue}, 75%, var(--subject-bg-lightness, 95%))`
+export interface ActivityData {
+  id: string
+  name: string
+  date: Date,
+  period_id: number
+  group_id: string
 }
 
 interface CalendarProps {   
-  scheduleData: Schedule
-  selectedClass: ClassData | null
+  activities: ActivityData[]
+  selectedClass: any | null
   onCellClick: (group: string | null, time: string | null, day: string | null) => void
-  calendarSettings: PeriodTime[]
+  periodTime: PeriodTime[]
+  groups: GroupData[]
 }
   
-export function CalendarTable({ scheduleData, selectedClass, onCellClick, calendarSettings }: CalendarProps) {
+export function CalendarTable({
+  selectedClass,
+  onCellClick,
+  periodTime,
+  groups,
+  activities
+}: CalendarProps) {
+  const days = getCurrentWeekDays()
   const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
 
   return (
@@ -38,57 +43,66 @@ export function CalendarTable({ scheduleData, selectedClass, onCellClick, calend
           <Table containerClassname="h-fit max-h-[calc(100vh-13rem)] overflow-y-auto relative">
             <TableHeader className="sticky top-0 z-10 bg-background">
               <TableRow>
-                <TableHead className="w-20 text-left font-medium border-r">Classes</TableHead>
+                <TableHead className="w-12 text-left font-medium border-r">Classes</TableHead>
                 <TableHead className="w-32 text-left font-medium border-r">Time</TableHead>
-                {DAYS.map((day, index) => (
-                  <TableHead key={day} className={`w-40 text-left font-medium ${index !== DAYS.length - 1 ? 'border-r' : ''}`}>
-                    {day}
+                {days.map((day, index) => (
+                  <TableHead key={day.date.toString()} className={`w-40 text-left font-medium ${index !== days.length - 1 ? 'border-r' : ''}`}>
+                    {`${day.weekday} ${day.date.toLocaleDateString(navigator.language, {day: 'numeric', month: 'short' })}`}
                   </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {GROUPS.map((group) => (
-                calendarSettings.map((time, timeIndex) => (
+              {groups.map((group) => (
+                periodTime.map((time, timeIndex) => (
                   <TableRow
-                    key={`${group}-${time.startTime}-${time.endTime}`}
-                    onMouseEnter={() => setHoveredGroup(group)}
+                    key={`${group.id}-${time.startTime}-${time.endTime}`}
+                    onMouseEnter={() => setHoveredGroup(group.id)}
                     onMouseLeave={() => setHoveredGroup(null)}
                   >
                     {timeIndex === 0 && (
                       <TableCell
-                        rowSpan={calendarSettings.length}
-                        className={`align-middle text-center font-medium border-r transition-colors duration-200 
-                          ${hoveredGroup === group ? 'bg-muted' : ''}`}
+                        rowSpan={periodTime.length}
+                        className={`p-0 align-middle text-center font-medium border-r transition-colors duration-200 
+                          ${hoveredGroup === group.id ? 'bg-muted' : ''}`}
                       >
-                        {group}
+                        <div className="flex items-center justify-center h-full">
+                          <span className="block transform rotate-180 [writing-mode:vertical-lr] whitespace-nowrap">
+                            {group.name}
+                          </span>
+                        </div>
                       </TableCell>
                     )}
                     <TableCell className="text-center whitespace-nowrap border-r">{time.startTime}-{time.endTime}</TableCell>
-                    {DAYS.map((day, dayIndex) => {
-                      const classData = scheduleData[group]?.[time.startTime]?.[day]
+                    {days.map((day, dayIndex) => {
+                      const activity = activities.find(a => 
+                        a.group_id === group.id && 
+                        a.period_id === time.periodOrder && 
+                        a.date.toISOString().split('T')[0] === day.date.toISOString().split('T')[0]
+                      );
+                      
                       const isSelected = selectedClass?.group === group &&
                         selectedClass?.time === time.startTime &&
-                        selectedClass?.day === day
+                        selectedClass?.day === day.weekday;
+
                       return (
                         <TableCell
-                          key={`${group}-${time}-${day}`}
+                          key={`${group.id}-${time.startTime}-${day.date}`}
                           className={`h-20 cursor-pointer transition-all duration-300 ease-in-out
                             ${isSelected ? 'ring-4 ring-primary ring-opacity-50 scale-105 z-10' : ''}
-                            ${dayIndex !== DAYS.length - 1 ? 'border-r' : ''}
+                            ${dayIndex !== days.length - 1 ? 'border-r' : ''}
                           `}
-                          onClick={() => onCellClick(group, time.startTime, day)}
+                          onClick={() => onCellClick(group.id, time.startTime, day.weekday)}
                         >
-                          {classData ? (
+                          {activity ? (
                             <div
-                              className="p-2 rounded h-full flex flex-col justify-center items-center text-center transition-transform duration-300 ease-in-out hover:scale-105"
-                              style={{ backgroundColor: getSubjectColor(classData.subject) }}
+                              className={styles.activityContent}
+                              style={{ backgroundColor: getSubjectColor(activity.name) }}
                             >
-                              <div className="font-medium text-lg">{classData.subject}</div>
-                              <div className="text-sm text-muted-foreground">{classData.teacher}</div>
+                              <div className={styles.activityName}>{activity.name}</div>
                             </div>
                           ) : (
-                            <div className="h-full flex items-center justify-center text-muted-foreground transition-opacity duration-300 ease-in-out opacity-50 hover:opacity-100">
+                            <div className={styles.emptyCell}>
                               Click to add
                             </div>
                           )}
@@ -106,3 +120,10 @@ export function CalendarTable({ scheduleData, selectedClass, onCellClick, calend
   )
 }
 
+const styles = {
+  activityContent: `p-2 rounded h-full flex flex-col justify-center items-center 
+  text-center transition-transform duration-300 ease-in-out hover:scale-105 bg-primary/10`,
+  activityName: "font-medium text-lg",
+  emptyCell: `h-full flex items-center justify-center text-muted-foreground transition-opacity 
+  duration-300 ease-in-out opacity-50 hover:opacity-100`
+}

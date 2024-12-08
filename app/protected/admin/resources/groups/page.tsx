@@ -1,9 +1,10 @@
 "use client"
 
-import { deleteResourceAction, getGroupsAction } from "../actions"
+import { deleteResourceAction } from "../actions"
 import { ResourcePage } from "@/components/resources-management/page"
 import { GroupForm } from "@/components/resources-management/groups/form"
 import { GROUP_COLUMNS } from "@/styles/constants"
+import { getGroupsAction } from "./actions"
 
 export default function GroupsPage() {
   return (

@@ -25,3 +25,8 @@ export const GROUP_COLUMNS = [
   { header: "Name", accessorKey: "name" as const, style: "font-medium" },
   { header: "Description", accessorKey: "description" as const },
 ]
+
+export const SUBJECT_COLUMNS = [
+  { header: "Name", accessorKey: "name" as const, style: "font-medium" },
+  { header: "Description", accessorKey: "description" as const },
+]

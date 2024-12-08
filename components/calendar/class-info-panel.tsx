@@ -11,19 +11,11 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Trash2 } from 'lucide-react'
 
-interface ClassData {
-  subject: string
-  teacher: string
-  group: string
-  time: string
-  day: string
-}
-
 interface ClassInfoDialogProps {
-  classData: ClassData | null
+  classData: any | null
   onClose: () => void
-  onUpdate: (updatedClass: ClassData) => void
-  onDelete: (classToDelete: ClassData) => void
+  onUpdate: (updatedClass: any) => void
+  onDelete: (classToDelete: any) => void
 }
 
 export function ClassInfoDialog({
@@ -32,7 +24,7 @@ export function ClassInfoDialog({
   onUpdate,
   onDelete
 }: ClassInfoDialogProps) {
-  const [editedClass, setEditedClass] = useState<ClassData | null>(null)
+  const [editedClass, setEditedClass] = useState<any | null>(null)
 
   useEffect(() => {
     setEditedClass(classData)
